@@ -6,6 +6,8 @@ csv_list <- c(
   "ex1_5d_v1.csv",
   "ex1_6d_v1.csv",
   "ex1_7d_v2.csv",
+  "e_exam_ex08_1_0005d.csv", 
+  "e_exam_ex09_1b_0844d.csv",
   "q_psych_ex03_1_0167d.csv",
   "vr_diab_ex09_1_1002d.csv",
   "vr_survcvd_2014_a_1023d.csv",

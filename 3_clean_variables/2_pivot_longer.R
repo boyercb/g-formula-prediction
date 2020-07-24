@@ -16,4 +16,4 @@ analytic_long <-
   )
 
 # limit to exams 4 through 7
-analytic_long <- filter(analytic_long, exam >= 4 & exam <= 7)
+analytic_long <- filter(analytic_long, exam >= 4 & exam <= 9)

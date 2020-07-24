@@ -11,7 +11,7 @@ analytic_long <- analytic_long %>%
     educ_2 = if_else(educ3 == 1 | educ3 == 2, 1, 0), # high school/some college
     educ_3 = if_else(educ3 == 3, 1, 0),              # bachelor's degree
     educ_4 = if_else(educ3 == 4 | educ3 == 5, 1, 0), # postgraduate education
-  
+    
     # marital status (categorical)
     marital_1 = if_else(marital == 1, 1, 0),            # single
     marital_2 = if_else(marital == 2, 1, 0),            # married
@@ -49,7 +49,7 @@ analytic_long <- analytic_long %>%
     # standard drinks per day (continuous)
     dpd = case_when(
       exam %in% c(6, 7) ~ (beer_week + white_wine_week + red_wine_week + liquor_week) / 7,
-      exam %in% c(4, 5) ~ (beer_week + wine_week + liquor_week) / 7
+      exam %in% c(4, 5, 8, 9) ~ (beer_week + wine_week + liquor_week) / 7
     ),
     
     # currently drinks (0/1)
@@ -111,11 +111,13 @@ analytic_long <-
       is.na(date) & !is.na(lag(date, 2)) ~ lag(date, 2) + 365.25 * 8,
       is.na(date) & !is.na(lag(date, 3)) ~ lag(date, 3) + 365.25 * 12,
       is.na(date) & !is.na(lag(date, 4)) ~ lag(date, 4) + 365.25 * 16,
+      is.na(date) & !is.na(lag(date, 5)) ~ lag(date, 5) + 365.25 * 20,
+      is.na(date) & !is.na(lag(date, 6)) ~ lag(date, 6) + 365.25 * 24,
       !is.na(date) ~ date
     ),
     edate = case_when(
-      exam %in% c(4,5,6) ~ lead(date) - 1,
-      exam == 7 ~ date + 365.25 * 4
+      exam %in% 4:8 ~ lead(date) - 1,
+      exam == 9 ~ date + 365.25 * 4
     ),
     datedth = if_else(is.na(datedth), lastcon, datedth)
   ) %>%
@@ -133,9 +135,10 @@ analytic_long <-
       datedth < date | chddate < date ~ 1, 
       
       # if you have two or more consecutive misses drop after possibly carrying one forward
-      fupat == "1_0_0_0" & exam > 5 ~ 1,
-      fupat == "1_1_0_0" & exam == 7 ~ 1,
-      fupat == "1_0_0_1" & exam > 5 ~ 1,
+      str_detect(fupat, "^1_0_0") & exam > 5 ~ 1,
+      str_detect(fupat, "^1_1_0_0") & exam > 6 ~ 1,
+      str_detect(fupat, "^1_1_1_0_0") & exam > 7 ~ 1,
+      str_detect(fupat, "^1_1_1_1_0_0") & exam > 8 ~ 1,
       
       # if you died or got CHD during this interval then keep 
       (date <= datedth & datedth <= edate) | (date <= chddate & chddate <= edate) ~ 0,
@@ -147,7 +150,7 @@ analytic_long <-
       exam == 4 ~ 0,
       
       # if you completed all exams then keep
-      fupat == "1_1_1_1" ~ 0,
+      fupat == "1_1_1_1_1_1" ~ 0,
     )
   )
 
@@ -224,17 +227,23 @@ analytic_long %>%
 # # A tibble: 11 x 5
 #      chd  died start stop      n
 #    <dbl> <dbl> <chr> <chr> <int>
-#  1     0     0 4     5        73
-#  2     0     0 4     6        61
-#  3     0     0 4     7      2242
-#  4     0     1 4     4        28
-#  5     0     1 4     5        43
-#  6     0     1 4     6        33
-#  7     0     1 4     7        65
-#  8     1     0 4     4        49
-#  9     1     0 4     5        52
-# 10     1     0 4     6        61
-# 11     1     0 4     7        63
+#  1     0     0     4     5    73
+#  2     0     0     4     6    61
+#  3     0     0     4     7    24
+#  4     0     0     4     8   138
+#  5     0     0     4     9  1635
+#  6     0     1     4     4    28
+#  7     0     1     4     5    43
+#  8     0     1     4     6    33
+#  9     0     1     4     7    65
+# 10     0     1     4     8   161
+# 11     0     1     4     9   150
+# 12     1     0     4     4    49
+# 13     1     0     4     5    52
+# 14     1     0     4     6    61
+# 15     1     0     4     7    91
+# 16     1     0     4     8    81
+# 17     1     0     4     9    25
 
 analytic_long <- select(
   analytic_long,

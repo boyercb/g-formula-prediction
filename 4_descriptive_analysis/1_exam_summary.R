@@ -68,17 +68,19 @@ kable(
   x = exam_summary,
   format = "latex",
   digits = 1,
-  align = "lccccc",
+  align = "lccccccc",
   col.names = c(
     "Characteristic",
     "Variable",
     "\\shortstack{4th exam \\\\ (1987–1991)}",
     "\\shortstack{5th exam \\\\ (1991–1994)}",
     "\\shortstack{6th exam \\\\ (1994–1998)}",
-    "\\shortstack{7th exam \\\\ (1998–2001)}"
+    "\\shortstack{7th exam \\\\ (1998–2001)}",
+    "\\shortstack{8th exam \\\\ (2001–2004)}",
+    "\\shortstack{9th exam \\\\ (2004–2008)}"
   ),
   escape = FALSE,
   booktabs = TRUE,
   linesep = ""
-)
+) %>% print()
 sink()

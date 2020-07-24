@@ -81,8 +81,7 @@ analytic <-
   filter(att4 == 1 & complete4 == 1)            # attended 4th exam and has complete baseline data
   
 # create a variable representing follow up pattern
-analytic <- unite(analytic, fupat, att4:att7, remove = FALSE)
-  
+analytic <- unite(analytic, fupat, att4:att9, remove = FALSE)
 
 
-  
+

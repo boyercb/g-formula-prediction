@@ -71,6 +71,18 @@ exam7_vars <- c(
   "liquor_limit7"     = "g115"  # COCKTAILS-LIMIT AT ONE TIME
 )
 
+exam8_vars <- c(
+  "beer_week8"        = "h072", # BEER-NUMBER PER WEEK
+  "wine_week8"        = "h075", # WINE-AVG. NUMBER PER WEEK
+  "liquor_week8"      = "h078"  # COCKTAILS-NUMBER PER WEEK
+)
+
+exam9_vars <- c(
+  "beer_week8"        = "j075", # BEER-NUMBER PER WEEK
+  "wine_week8"        = "j077", # WINE-AVG. NUMBER PER WEEK
+  "liquor_week8"      = "j079"  # COCKTAILS-NUMBER PER WEEK
+)
+
 psy_vars <- c(
   "edul3" = "py122", # years of schooling
   "educ3" = "py123"  # highest degree completed
@@ -83,6 +95,8 @@ exam_varlist <- list(
   exam5_vars,
   exam6_vars,
   exam7_vars,
+  exam8_vars,
+  exam9_vars,
   psy_vars
 )
 
@@ -93,6 +107,8 @@ exam_list <- list(
   framingham$ex1_5d_v1,
   framingham$ex1_6d_v1,
   framingham$ex1_7d_v2,
+  framingham$e_exam_ex08_1_0005d,
+  framingham$e_exam_ex09_1b_0844d,
   framingham$q_psych_ex03_1_0167d
 )
 
@@ -132,7 +148,7 @@ covs_fixed <- c(
   "pre_ldl",
   "pre_hrx",
   "pre_liprx"
-#  "time_f"
+  #  "time_f"
 )
 
 covs_tv <- c(

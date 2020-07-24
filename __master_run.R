@@ -12,6 +12,8 @@ source("1_helpers/1_helpers_generic.R")
 
 source("1_helpers/2_helpers_gformula.R")
 
+source("1_helpers/3_helpers_plots.R")
+
 #source("1_helpers/02_helpers_estimators.R")
 
 #source("1_helpers/03_helpers_bootstrap.R")

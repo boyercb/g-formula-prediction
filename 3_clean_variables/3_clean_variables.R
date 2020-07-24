@@ -247,8 +247,8 @@ analytic_long %>%
 
 analytic_long <- select(
   analytic_long,
-  covs_model,
-  id_vars,
-  dvs,
+  all_of(covs_model),
+  all_of(id_vars),
+  all_of(dvs),
   time
 )

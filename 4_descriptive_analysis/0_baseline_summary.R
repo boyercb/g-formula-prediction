@@ -1,13 +1,13 @@
 baseline_mean <- 
   analytic_long %>%
-  select(covs_fixed) %>%
+  select(all_of(covs_fixed)) %>%
   summarise_all(mean, na.rm = T) %>%
   pivot_longer(everything()) %>%
   rename(mean = value)
 
 baseline_sd <- 
   analytic_long %>%
-  select(covs_fixed) %>%
+  select(all_of(covs_fixed)) %>%
   summarise_all(sd, na.rm = T) %>%
   pivot_longer(everything()) %>%
   rename(sd = value)

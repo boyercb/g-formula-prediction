@@ -38,10 +38,10 @@ analytic <- left_join(
 
 # merge exam-specific data
 for (i in 1:length(exam_list)) {
- analytic <- left_join(
+  analytic <- left_join(
     x = analytic, 
-    y = select(exam_list[[i]], id_vars, exam_varlist[[i]]) %>%
-        set_names(c(id_vars, names(exam_varlist[[i]]))),
+    y = select(exam_list[[i]], all_of(id_vars), exam_varlist[[i]]) %>%
+      set_names(c(id_vars, names(exam_varlist[[i]]))),
     by = id_vars
   )
 }
@@ -67,7 +67,7 @@ analytic$complete4 <-
   is.na() %>%
   rowSums() == 0 
 analytic$complete4 <- as.numeric(analytic$complete4)
-  
+
 # define baseline date as date at exam 4 or mean if skipped exam 4
 analytic$bdate <- 
   if_else(is.na(analytic$date4), mean(analytic$date4, na.rm = TRUE), analytic$date4)
@@ -79,7 +79,7 @@ analytic <-
   filter(cvddate > bdate) %>%                   # no prior CVD diagnosis at 4th exam
   filter(age4 <= 70) %>%                        # age 70 or younger at 4th exam
   filter(att4 == 1 & complete4 == 1)            # attended 4th exam and has complete baseline data
-  
+
 # create a variable representing follow up pattern
 analytic <- unite(analytic, fupat, att4:att9, remove = FALSE)
 

@@ -10,17 +10,11 @@ source("0_packages/load_packages.R")
 
 source("1_helpers/1_helpers_generic.R")
 
-source("1_helpers/2_helpers_gformula.R")
+source("1_helpers/2_helpers_parameteric_models.R")
 
-source("1_helpers/3_helpers_plots.R")
+source("1_helpers/3_helpers_gformula.R")
 
-#source("1_helpers/02_helpers_estimators.R")
-
-#source("1_helpers/03_helpers_bootstrap.R")
-
-#source("1_helpers/04_helpers_tables.R")
-
-#source("1_helpers/05_helpers_plots.R")
+source("1_helpers/4_helpers_plots.R")
 
 
 # Load data ---------------------------------------------------------------
@@ -50,12 +44,17 @@ source("4_descriptive_analysis/1_exam_summary.R")
 
 # Run parametric models ---------------------------------------------------
 
-source("5_parametric_models/1_gformula_ldl.R")
+source("5_parametric_models/0_define_parametric_models.R")
 
-source("5_parametric_models/2_gformula_sbp.R")
+source("5_parametric_models/1_fit_parametric_models.R")
 
-source("5_parametric_models/3_gformula_table.R")
+source("5_parametric_models/2_model_diagnostics.R")
 
-#source("5_parametric_models/gcomp_subs.R")
+source("5_parametric_models/3_gformula_predictions.R")
+
+source("5_parametric_models/4_calibration.R")
+
+source("5_parametric_models/5_validation.R")
+
 
 

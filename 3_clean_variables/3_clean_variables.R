@@ -164,7 +164,7 @@ analytic_long <- filter(analytic_long, drop == 0)
 analytic_long <- 
   analytic_long %>%
   group_by(pid) %>%
-  fill(covs_tv) %>%
+  fill(all_of(covs_tv)) %>%
   ungroup()
 
 

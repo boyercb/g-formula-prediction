@@ -34,7 +34,7 @@ sink()
 
 sink("9_results/tables/out_models.tex")
 texreg(
-  l = list(Y.fit, D.fit),
+  l = list("event_chd" = Y.fit, "event_dth" = D.fit),
   booktabs = TRUE,
   use.packages = FALSE,
   table = FALSE

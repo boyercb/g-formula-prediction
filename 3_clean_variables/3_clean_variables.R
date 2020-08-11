@@ -257,4 +257,4 @@ analytic_long <- select(
   all_of(dvs),
   starts_with("lag1"),
   time
-)
+) %>% drop_na()

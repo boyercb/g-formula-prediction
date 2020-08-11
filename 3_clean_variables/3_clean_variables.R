@@ -95,7 +95,6 @@ analytic_long <- analytic_long %>%
     -bdate
   )
 
-
 # Fix all time variables to start of follow up ----------------------------
 
 analytic_long <-
@@ -245,10 +244,17 @@ analytic_long %>%
 # 16     1     0     4     8    81
 # 17     1     0     4     9    25
 
+# add lagged values of time-varying covariates
+analytic_long <- analytic_long %>%
+  group_by(pid) %>%
+  mutate(across(all_of(covs_tv), lag, default = 0, .names = "lag1_{col}")) %>%
+  ungroup()
+
 analytic_long <- select(
   analytic_long,
   all_of(covs_model),
   all_of(id_vars),
   all_of(dvs),
+  starts_with("lag1"),
   time
 )

@@ -26,18 +26,11 @@ baseline_vars <-
       "Married",
       "Divorced, widowed, or separated",
       "Ever smoked",
-      "No drinks per day",
-      "1 to <2 drinks per day",
-      "2 to <4 drinks per day",
-      "4 or more drinks per day",
+      "Drinks per day",
       "Body mass index",
       "Diabetes mellitus",
       "Systolic blood pressure",
-      "No cigarretes per day",
-      "1 cigarretes per day",
-      "2 to 5 cigarretes per day",
-      "5 to 24 or cigarretes per day",
-      "25 or more cigarretes per day",
+      "Cigarettes per day",
       "LDL-cholesterol",
       "Blood pressure medication",
       "Anti-cholesterol medication"
@@ -46,21 +39,22 @@ baseline_vars <-
       rep("4", 2),
       rep("3", 4),
       rep("4", 3),
-      rep("3", 16)
+      rep("3", 9)
     ),
     yrs = c(
       rep("1987–1991", 2),
       rep("1984-1987", 4),
       rep("1987–1991", 3),
-      rep("1984-1987", 16)
+      rep("1984-1987", 9)
     ),
     type = c("bin",
              "cont",
-             rep("bin", 12),
+             rep("bin", 8),
+             "cont",
              "cont",
              "bin",
              "cont",
-             rep("bin", 5),
+             "cont",
              "cont",
              "bin",
              "bin")

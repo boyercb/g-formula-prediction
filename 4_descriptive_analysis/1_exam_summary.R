@@ -4,9 +4,12 @@ exam_mean <-
     cpd = replace(cpd, smk == 0, NA),
     dpd = replace(dpd, drk == 0, NA)
   ) %>%
-  select(covs_tv, time) %>%
+  select(covs_tv, dvs, time) %>%
   group_by(time) %>%
-  summarise_all(mean, na.rm = T) %>%
+  summarise(
+    across(covs_tv, mean, na.rm = T), 
+    across(dvs, sum, na.rm = T)
+    ) %>%
   pivot_longer(-time) %>%
   rename(mean = value)
 
@@ -16,7 +19,7 @@ exam_sd <-
     cpd = replace(cpd, smk == 0, NA),
     dpd = replace(cpd, drk == 0, NA)
   ) %>%
-  select(covs_tv, time) %>%
+  select(covs_tv, dvs, time) %>%
   group_by(time) %>%
   summarise_all(sd, na.rm = T) %>%
   pivot_longer(-time) %>%
@@ -36,7 +39,9 @@ exam_vars <-
       "Systolic blood pressure (mmHg)",
       "LDL-cholesterol",
       "Blood pressure medication",
-      "Lipid lowering medication"
+      "Lipid lowering medication",
+      "Coronary heart disease events (Y)",
+      "Deaths due to other causes (D)"
     ),
     type = c("bin",
              "cont",
@@ -47,17 +52,30 @@ exam_vars <-
              "cont",
              "cont",
              "bin",
-             "bin")
+             "bin",
+             "count",
+             "count")
   )
 
 exam_summary <-
   left_join(exam_vars, exam_mean, by = "name") %>%
   left_join(exam_sd, by = c("name", "time")) %>%
   mutate(
-    mean = if_else(type == "bin", specd(mean * 100, 1), specd(mean, 1)),
+    mean = case_when(
+      type == "bin" ~ specd(mean * 100, 1), 
+      type == "cont"~ specd(mean, 1),
+      type == "count"~ specd(mean, 0)),
     sd = specd(sd, 1),
-    label = if_else(type == "cont", paste0(label, ", mean (SD)"), paste0(label, ", (\\%)")),
-    value = if_else(type == "bin", as.character(mean), paste0(mean, " (", sd, ")"))
+    label = case_when(
+      type == "cont" ~ paste0(label, ", mean (SD)"), 
+      type == "bin" ~ paste0(label, ", (\\%)"),
+      type == "count" ~ label
+    ),
+    value = case_when(
+      type == "bin" ~ as.character(mean), 
+      type == "cont" ~ paste0(mean, " (", sd, ")"),
+      type == "count" ~ as.character(mean)
+      )
   ) %>%
   select(label, name, time, value) %>%
   pivot_wider(names_from = "time", values_from = "value", names_prefix = "exam_") 
@@ -70,7 +88,7 @@ kable(
   digits = 1,
   align = "lccccccc",
   col.names = c(
-    "Characteristic",
+    "Characteristic (Z)",
     "Variable",
     "\\shortstack{4th exam \\\\ (1987–1991)}",
     "\\shortstack{5th exam \\\\ (1991–1994)}",
@@ -82,5 +100,7 @@ kable(
   escape = FALSE,
   booktabs = TRUE,
   linesep = ""
-) %>% print()
+) %>% kable_styling() %>%
+  row_spec(length(covs_tv), hline_after = TRUE) %>%
+  print()
 sink()

@@ -4,7 +4,7 @@ exam_mean <-
     cpd = replace(cpd, smk == 0, NA),
     dpd = replace(dpd, drk == 0, NA)
   ) %>%
-  select(covs_tv, dvs, time) %>%
+  select(all_of(covs_tv), all_of(dvs), time) %>%
   group_by(time) %>%
   summarise(
     across(covs_tv, mean, na.rm = T), 
@@ -19,7 +19,7 @@ exam_sd <-
     cpd = replace(cpd, smk == 0, NA),
     dpd = replace(cpd, drk == 0, NA)
   ) %>%
-  select(covs_tv, dvs, time) %>%
+  select(all_of(covs_tv), all_of(dvs), time) %>%
   group_by(time) %>%
   summarise_all(sd, na.rm = T) %>%
   pivot_longer(-time) %>%

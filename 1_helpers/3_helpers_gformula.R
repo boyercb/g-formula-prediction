@@ -82,7 +82,10 @@ gformula_mc <- function(Y.fit,
   # Determine ranges of observed covariates and outcome
   X.range <- lapply(seq_along(covs), function(x) range(data[[covs[x]]]))
   Y.range <- range(data[[outcome]])
-  D.range <- range(data[[comp.risk]])
+  
+  if (!is.null(D.fit)) {
+   D.range <- range(data[[comp.risk]])
+  }
   
   # If the number of desired simulation units is greater than the number of
   # unique units sample with replacement

@@ -120,9 +120,9 @@ gformula_mc <- function(Y.fit,
   for (t in mc.start:mc.stop) {
     if (t == mc.start) {
       # Set simulated covariate values at time t = 0 equal to observed covariate values
-      sims <- data[data[[time]] == t, c(id, 'sim', time, covs, base.covs, hist.vars)]
+      sims <- data[data[[time]] <= t, c(id, 'sim', time, covs, base.covs, hist.vars)]
       sim <- sims
-      n.start <- nrow(sim)
+      n.start <- nrow(sim[sim[[time]] == t, ])
     } else {
       # Set initial simulated values at time t to simulated values at time t - 1, to be
       # updated later

@@ -279,8 +279,19 @@ gformula_mc <- function(Y.fit,
     
       } else {
         # Calculate prodp1 as product of previous values
-        sim$prodp1 <- sim$Py * tapply(sims$prodp0, interaction(sims[[id]], sims[['sim']]), FUN = prod) * 
-          tapply(1 - sims$Pd, interaction(sims[[id]], sims[['sim']]), FUN = prod) * (1 - sim$Pd)
+        sim$prodp1 <- sim$Py * 
+          ave(
+            sims$prodp0[sims[[time]] < t], 
+            sims[[id]][sims[[time]] < t], 
+            sims[['sim']][sims[[time]] < t], 
+            FUN = prod
+          ) *
+          ave(
+            1 - sims$Pd[sims[[time]] < t],
+            sims[[id]][sims[[time]] < t], 
+            sims[['sim']][sims[[time]] < t],  
+            FUN = prod
+          ) * (1 - sim$Pd)
       }
       
       # If D occurs, flip a coin to determine which happens first Y or D
@@ -315,7 +326,7 @@ gformula_mc <- function(Y.fit,
   }
   
   sims <- sims[order(sims[[id]], sims[['sim']], sims[[time]]), ]
-  
+
   predictions <- t(tapply(sims$poprisk, list(sims[[time]], sims[[id]]), FUN = mean))
   predictions <- as.data.frame(predictions)
   predictions[[id]] <- as.numeric(row.names(predictions))

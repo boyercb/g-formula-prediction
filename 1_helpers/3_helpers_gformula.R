@@ -336,7 +336,7 @@ gformula_mc <- function(Y.fit,
       predictions,
       varying = list(1:(mc.stop - mc.start + 1)),
       v.names = "pred",
-      idvar = "pid",
+      idvar = id,
       timevar = "time",
       direction = "long"
     )

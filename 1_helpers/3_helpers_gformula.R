@@ -120,9 +120,10 @@ gformula_mc <- function(Y.fit,
   for (t in mc.start:mc.stop) {
     if (t == mc.start) {
       # Set simulated covariate values at time t = 0 equal to observed covariate values
-      sims <- data[data[[time]] <= t, c(id, 'sim', time, covs, base.covs, hist.vars)]
+      sims <- data[data[[time]] == t, c(id, 'sim', time, covs, base.covs, hist.vars)]
       sim <- sims
       n.start <- nrow(sim[sim[[time]] == t, ])
+      n.start.unique <- length(unique(sim[[id]][sim[[time]] == t]))
     } else {
       # Set initial simulated values at time t to simulated values at time t - 1, to be
       # updated later
@@ -235,13 +236,11 @@ gformula_mc <- function(Y.fit,
         sim$Py <- stats::predict(Y.fit, type = 'response', newdata = sim)
       }
     }
-    #print(as.data.frame(sim$Py))
-    
+
     # Simulate outcome variable
     if (Y.fit$type == 'survival') {
       sim$Y <- stats::rbinom(n.start, 1, sim$Py)
-      #print(as.data.frame(sim$Y))
-      
+
     }
     # Set simulated outcome values outside the observed range to the observed min / max
     if (min(sim$Y) < Y.range[1]) {
@@ -278,22 +277,20 @@ gformula_mc <- function(Y.fit,
         sim$prodp0 <- 1 - sim$Py
     
       } else {
+
         # Calculate prodp1 as product of previous values
         sim$prodp1 <- sim$Py * 
-          ave(
+          tapply(
             sims$prodp0[sims[[time]] < t], 
-            sims[[id]][sims[[time]] < t], 
-            sims[['sim']][sims[[time]] < t], 
+            rep(1:(n.start.unique * mc.sims), each = t - mc.start),
             FUN = prod
           ) *
-          ave(
+          tapply(
             1 - sims$Pd[sims[[time]] < t],
-            sims[[id]][sims[[time]] < t], 
-            sims[['sim']][sims[[time]] < t],  
+            rep(1:(n.start.unique * mc.sims), each =  t - mc.start),
             FUN = prod
           ) * (1 - sim$Pd)
       }
-      
       # If D occurs, flip a coin to determine which happens first Y or D
       Y.first <- stats::rbinom(length(sim$Y[sim$D == 1]), 1, sim$prodp1)
       
@@ -313,11 +310,10 @@ gformula_mc <- function(Y.fit,
         sims[['Py']] <- NA
       }
     }
+    
     # Add simulated data for time t to aggregate simulated data over time
     sims <- rbind(sims[sims[[time]] < t, ], sim)
-
-    # # Add simulated data for time t to aggregate simulated data over time
-    # sim[sim[[time]] == t] <- sim
+    sims <- sims[order(sims[[id]], sims[['sim']], sims[[time]]), ]
   }
   
   if (Y.fit$type == 'survival') {
@@ -434,3 +430,5 @@ update_histories <- function(data, hist.vars, hist.fun) {
     "lag" = data[, gsub("^lag[0-9]+_", "", hist.vars)]
   )
 }
+
+

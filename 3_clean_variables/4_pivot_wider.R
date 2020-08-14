@@ -1,10 +1,10 @@
 # pivot to wide format for lmtp package
 analytic_wide <- 
   analytic_long %>%
-  drop_na() %>%
+  drop_na(.) %>%
   mutate(event_chd = replace(event_chd, event_dth == 1, NA)) %>%
   pivot_longer(
-    cols = c(covs_tv, dvs),
+    cols = c(covs_tv, paste0("lag1_", covs_tv),  dvs),
     names_to = "variable"
   ) %>%
   pivot_wider(

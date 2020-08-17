@@ -80,9 +80,9 @@ gformula_mc <- function(Y.fit,
   data <- data[order(data[[id]], data[[time]]), ]
   
   # Determine ranges of observed covariates and outcome
-  X.range <- lapply(seq_along(covs), function(x) range(data[[covs[x]]]))
+  X.range <- lapply(seq_along(covs), function(x) range(data[[covs[x]]], na.rm = TRUE))
   Y.range <- range(data[[outcome]])
-  
+
   if (!is.null(D.fit)) {
    D.range <- range(data[[comp.risk]])
   }
@@ -223,6 +223,7 @@ gformula_mc <- function(Y.fit,
     # Predict outcome value at time t using parametric models
     if (Y.fit$type == 'survival') {
       sim$Py <- stats::predict(Y.fit, type = 'response', newdata = sim)
+      
     } else if (Y.fit$type == 'continuous') {
       if (t < (n.unique.times - 1)) {
         sim$Ey <- NA
@@ -277,7 +278,7 @@ gformula_mc <- function(Y.fit,
         sim$prodp0 <- 1 - sim$Py
     
       } else {
-
+        
         # Calculate prodp1 as product of previous values
         sim$prodp1 <- sim$Py * 
           tapply(

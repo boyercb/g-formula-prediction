@@ -31,6 +31,7 @@ gformula_mc <- function(Y.fit,
                         data,
                         id = "id",
                         time = "time",
+                        treatment = NULL,
                         base.covs = NULL,
                         hist.vars = NULL,
                         hist.fun = NULL,
@@ -40,8 +41,7 @@ gformula_mc <- function(Y.fit,
                         mc.sims = 1,
                         boot = FALSE,
                         boot.reps = 500,
-                        interventions = NULL,
-                        restrictions = NULL,
+                        intervention = NULL,
                         ci.method = NULL,
                         ci.level = 95,
                         custom.pred.fun = stats::predict(),
@@ -185,7 +185,7 @@ gformula_mc <- function(Y.fit,
               pred.fun = custom.pred.fun
             )
           )
-        
+
         # Set simulated covariate values outside the observed range to the observed min / max
         if (X.types[[i]] %in% c('normal', 'bounded normal', 'truncated normal')) {
           
@@ -207,17 +207,18 @@ gformula_mc <- function(Y.fit,
           
         }
         
-        # TODO: restrictions
+        # restrictions
         if (!is.null(X.restrictions[[i]])) {
           rows <- with(sim, !eval(parse(text = X.restrictions[[i]]$subset)))
           sim[[covs[i]]][rows] <- X.restrictions[[i]]$otherwise
         }
         
-        # TODO: update histories?
-        
       }
       
       # TODO: add interventions
+      if (!is.null(intervention) & !is.null(treatment)) {
+        sim[[treatment]] <- intervention(sim[[treatment]])
+      }
     }
 
     # Predict outcome value at time t using parametric models

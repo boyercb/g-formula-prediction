@@ -16,7 +16,7 @@ datagen <- function(N,
                     c3 = log(1.5),
                     c4 = log(0.5), 
                     sigma = 1, 
-                    type = "long") {
+                    output = "long") {
   
   # time point 1
   L0 <- rnorm(N, a0, sigma)
@@ -33,28 +33,44 @@ datagen <- function(N,
   A1 <- ifelse(Y0 == 1 , NA, A1)
   Y1 <- ifelse(Y0 == 1, 1, Y1)
 
-  # export simulated data in either wide or long format
-  df <- switch(
-    type,
-    "long" = data.frame(
-      id = rep(1:N, 2),
-      time = rep(c(0, 1), each = N),
-      L = c(L0, L1),
-      A = c(A0, A1),
-      Y = c(Y0, Y1)
-    ),
-    "wide" = data.frame(
-      id = 1:N,
-      L0 = L0,
-      A0 = A0,
-      Y0 = Y0,
-      L1 = L1,
-      A1 = A1,
-      Y1 = Y1
+  build_df <- function(N, L0, A0, Y0, L1, A1, Y1, output) {
+    switch(
+      output,
+      "long" = data.frame(
+        id = rep(1:N, 2),
+        time = rep(c(0, 1), each = N),
+        L = c(L0, L1),
+        A = c(A0, A1),
+        Y = c(Y0, Y1),
+        lag1_L = c(rep(0, N), L0),
+        lag1_A = c(rep(0, N), A0)
+      ),
+      "wide" = data.frame(
+        id = 1:N,
+        L0 = L0,
+        A0 = A0,
+        Y0 = Y0,
+        L1 = L1,
+        A1 = A1,
+        Y1 = Y1
+      )
     )
-  )
+  }
+  
+  # export simulated data in either wide or long format
+  df <- 
+    switch(
+      output,
+      "long" = build_df(N, L0, A0, Y0, L1, A1, Y1, output = "long"),
+      "wide" = build_df(N, L0, A0, Y0, L1, A1, Y1, output = "wide"),
+      "both" = list(
+        "long" = build_df(N, L0, A0, Y0, L1, A1, Y1, output = "long"),
+        "wide" = build_df(N, L0, A0, Y0, L1, A1, Y1, output = "wide")
+      )
+    )
   
   return(df)
 }
+
 
 

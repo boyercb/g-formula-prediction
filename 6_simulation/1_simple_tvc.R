@@ -339,6 +339,8 @@ run_simulation <- function(N,
 
 # run simulation ----------------------------------------------------------
 
+if (rerun_simulation) {
+  
 SIMS <- 500
 
 sim_params <- 
@@ -349,7 +351,7 @@ sim_params <-
 
 pb <- txtProgressBar(max = nrow(sim_params), initial = NA, style = 3)
 
-results <-
+simple_tvc_results <-
   pmap(
     as.list(sim_params),
     run_simulation,
@@ -373,4 +375,12 @@ results <-
 
 close(pb)
 
-write_rds(results, get_data("simple_tvc_results"))
+write_rds(simple_tvc_results, get_data("simple_tvc_results"))
+
+} else {
+  
+  simple_tvc_results <- read_rds(get_data("simple_tvc_results"))
+}
+
+
+

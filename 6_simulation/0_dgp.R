@@ -15,6 +15,7 @@ datagen <- function(N,
                     c2 = log(0.5),
                     c3 = log(1.5),
                     c4 = log(0.5), 
+                    c5 = 0,
                     sigma = 1, 
                     output = "long") {
   
@@ -25,8 +26,12 @@ datagen <- function(N,
   
   # time point 2
   L1 <- rnorm(N, a0 + a1 * L0 + a2 * A0 + a3 * L0 * A0, sigma)
-  A1 <- rbinom(N, 1, plogis(b0 + b1 * L1 + b2 * L0 + b3 * A0))
-  Y1 <- rbinom(N, 1, plogis(c0 + c1 * L1 + c2 * A1 + c3 * L0 + c4 * A0))
+  if (b3 == Inf) {
+    A1 <- A0
+  } else {
+    A1 <- rbinom(N, 1, plogis(b0 + b1 * L1 + b2 * L0 + b3 * A0))
+  }
+  Y1 <- rbinom(N, 1, plogis(c0 + c1 * L1 + c2 * A1 + c3 * L0 + c4 * A0 + c5 * A0 * A1))
   
   # adjust for survival
   L1 <- ifelse(Y0 == 1 , NA, L1)

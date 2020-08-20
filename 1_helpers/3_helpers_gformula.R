@@ -217,7 +217,7 @@ gformula_mc <- function(Y.fit,
       
       # TODO: add interventions
       if (!is.null(intervention) & !is.null(treatment)) {
-        sim[[treatment]] <- intervention(sim[[treatment]])
+        sim[[treatment]] <- intervention(sim, sim[[treatment]])
       }
     }
 

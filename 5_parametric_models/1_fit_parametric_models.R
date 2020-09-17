@@ -20,6 +20,26 @@ D.fit <-
     data = analytic_long
   )
 
+conventional.fit_0_2 <- 
+  glm(
+    formula = event_chd_3 ~ sex + age0 + educ_1 + educ_2 + educ_3 +
+      marital_1 + marital_2 + eversmk + pre_dpd + pre_bmi + pre_dm + pre_sbp +
+      pre_cpd + pre_ldl + pre_hrx + pre_liprx + cpd_0 + dpd_0 + bmi_0 +
+      dm_0 + sbp_0 + ldl_0 + hrx_0 + liprx_0,
+    family = binomial(link = 'logit'),
+    data = analytic_wide
+  )
+
+conventional.fit_0_6 <- 
+  glm(
+    formula = event_chd_6 ~ sex + age0 + educ_1 + educ_2 + educ_3 +
+      marital_1 + marital_2 + eversmk + pre_dpd + pre_bmi + pre_dm + pre_sbp +
+      pre_cpd + pre_ldl + pre_hrx + pre_liprx + cpd_0 + dpd_0 + bmi_0 +
+      dm_0 + sbp_0 + ldl_0 + hrx_0 + liprx_0,
+    family = binomial(link = 'logit'),
+    data = analytic_wide
+  )
+
 
 # Create output tables ----------------------------------------------------
 

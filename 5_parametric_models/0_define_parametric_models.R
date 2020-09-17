@@ -17,7 +17,7 @@ X.models <-
       formula = cpd ~ sex + age0 + educ_1 + educ_2 + educ_3 + marital_1 + 
         marital_2 + eversmk + pre_dpd + pre_bmi + pre_dm + pre_sbp + pre_cpd +
         pre_ldl + pre_hrx + pre_liprx + lag1_cpd + lag1_dpd + lag1_bmi + lag1_dm +
-        lag1_sbp + lag1_ldl + lag1_hrx + lag1_liprx + lag1_liprx + as.factor(time),
+        lag1_sbp + lag1_ldl + lag1_hrx + lag1_liprx + as.factor(time),
       link = "log",
       family = "normal",
       restrict = list(
@@ -64,10 +64,14 @@ X.models <-
     "dm" = list(
       formula = dm ~ sex + age0 + educ_1 + educ_2 + educ_3 + marital_1 + 
         marital_2 + eversmk + pre_dpd + pre_bmi + pre_dm + pre_sbp + pre_cpd +
-        pre_ldl + pre_hrx + pre_liprx + lag1_cpd + lag1_dpd + lag1_bmi + lag1_dm +
+        pre_ldl + pre_hrx + pre_liprx + lag1_cpd + lag1_dpd + lag1_bmi +
         lag1_sbp + lag1_ldl + lag1_hrx + lag1_liprx + cpd + dpd + bmi + as.factor(time),
       link = "logit",
-      family = "binomial"
+      family = "binomial",
+      restrict = list(
+        subset = 'lag1_dm == 0',
+        otherwise = 1
+      )
     ),
     
     # linear model for systolic blood pressure
@@ -116,7 +120,6 @@ X.models <-
   )
 
 
-
 # Define outcome model ----------------------------------------------------
 
 # pooled logistic model of CVD events
@@ -129,6 +132,7 @@ Y.model <-
     link = "logit",
     family = "binomial"
   )
+
 
 
 # Define competing event model --------------------------------------------

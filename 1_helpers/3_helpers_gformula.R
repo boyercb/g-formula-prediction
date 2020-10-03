@@ -47,6 +47,7 @@ gformula_mc <- function(Y.fit,
                         custom.pred.fun = stats::predict(),
                         num.threads = NULL,
                         verbose = FALSE,
+                        merge = TRUE,
                         seed = runif(1, 0, .Machine$integer.max)) {
   
   # local variables
@@ -342,10 +343,11 @@ gformula_mc <- function(Y.fit,
   predictions <- predictions[order(predictions[[id]], predictions[[time]]), ]
   predictions[[time]] <- predictions[[time]] + (mc.start - 1)
   row.names(predictions) <- NULL
-
-  predictions <- merge(orig, predictions, by = c(id, time), all.x = TRUE, sort = TRUE)
-  predictions <- predictions[order(predictions[['order']]), 'pred']
-  names(predictions) <- NULL
+  if (merge == TRUE) {
+    predictions <- merge(orig, predictions, by = c(id, time), all.x = TRUE, sort = TRUE)
+    predictions <- predictions[order(predictions[['order']]), 'pred']
+    names(predictions) <- NULL
+  } 
   return(predictions)
   
 }

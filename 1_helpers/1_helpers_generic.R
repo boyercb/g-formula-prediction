@@ -10,6 +10,8 @@ get_data <- function(path) {
 
 specd <- function(x, k) trimws(format(round(x, k), nsmall=k))
 
+print_ci <- function(est, lwr, upr, k = 2) paste0(specd(est, k), " (", specd(lwr, k), ", ", specd(upr, k), ")")
+
 trim_glm <- function(fit) {
   fit$y <- c()
   fit$model <- c()
@@ -52,7 +54,15 @@ trim_multinom <- function(fit) {
 }
 
 add_rmse <- function(fit) {
-  return (sqrt(mean((fit$y - stats::fitted(fit))^2)))
+  return(sqrt(mean((fit$y - stats::fitted(fit))^2)))
+}
+
+add_grf_rmse <- function(rf) {
+  if (rf$type %in% c("binomial grf", "survival")) {
+    return(sqrt(mean((as.numeric(rf$Y.orig) - 1 - rf$predictions[, 2])^2)))
+  } else {
+    return(sqrt(mean((rf$Y.orig - rf$predictions)^2)))
+  }
 }
 
 add_stderr <- function(fit) {
@@ -65,4 +75,38 @@ add_stderr <- function(fit) {
 
 add_vcov <- function(fit) {
   return(stats::vcov(fit))
+}
+
+
+winsorize <- function(x, pct) {
+  upr <- quantile(x, pct + (1 - pct) / 2, na.rm = TRUE)
+  lwr <- quantile(x, (1 - pct) / 2, na.rm = TRUE)
+  
+  x[x > upr] <- upr
+  x[x < lwr] <- lwr
+  
+  return(x)
+}
+
+draw_bootstrap_samples <- function(data, id, time) {
+  ids <- unique(data[[id]])
+  samples <- sample(x = ids, size = length(ids), replace = TRUE)
+  
+  rows <- sapply(samples, function(x) which(data[[id]] == x), simplify = FALSE)
+  times <- sapply(rows, function(x) length(x))
+  
+  boot <- data[unlist(rows), ]
+  boot$id <- rep(1:length(samples), times = times)
+  
+  return(boot)
+}
+
+zero_out_lags <- function(data, lags) {
+  if (lags == 0) {
+    data[, c(paste0("lag1_", covs_tv), paste0("lag2_", covs_tv))] <- 0
+  }
+  else if (lags == 1) {
+    data[, paste0("lag2_", covs_tv)] <- 0
+  }
+  return(data)
 }

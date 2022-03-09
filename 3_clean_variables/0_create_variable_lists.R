@@ -78,9 +78,9 @@ exam8_vars <- c(
 )
 
 exam9_vars <- c(
-  "beer_week8"        = "j075", # BEER-NUMBER PER WEEK
-  "wine_week8"        = "j077", # WINE-AVG. NUMBER PER WEEK
-  "liquor_week8"      = "j079"  # COCKTAILS-NUMBER PER WEEK
+  "beer_week9"        = "j075", # BEER-NUMBER PER WEEK
+  "wine_week9"        = "j077", # WINE-AVG. NUMBER PER WEEK
+  "liquor_week9"      = "j079"  # COCKTAILS-NUMBER PER WEEK
 )
 
 psy_vars <- c(
@@ -101,82 +101,78 @@ exam_varlist <- list(
 )
 
 exam_list <- list(
-  framingham$ex1_2d_v3,
-  framingham$ex1_3d_v1,
-  framingham$ex1_4d_v1,
-  framingham$ex1_5d_v1,
-  framingham$ex1_6d_v1,
-  framingham$ex1_7d_v2,
-  framingham$e_exam_ex08_1_0005d,
-  framingham$e_exam_ex09_1b_0844d,
-  framingham$q_psych_ex03_1_0167d
+  csvs$ex1_2d_v3,
+  csvs$ex1_3d_v1,
+  csvs$ex1_4d_v1,
+  csvs$ex1_5d_v1,
+  csvs$ex1_6d_v1,
+  csvs$ex1_7d_v2,
+  csvs$e_exam_ex08_1_0005d,
+  csvs$e_exam_ex09_1b_0844d,
+  csvs$q_psych_ex03_1_0167d
 )
 
 date_vars <-
   c("chddate",
     "chfdate",
     "cvddate",
+    "strokedate",
     "datedth",
     "date",
     "lastsoe",
     "lastatt",
     "lastcon")
 
-covs_fixed <- c(
-  "sex",
-  "age0",
-  "educ_1",
-  "educ_2",
-  "educ_3",
-  "educ_4",
-  "marital_1",
-  "marital_2",
-  "marital_3",
-  "eversmk",
-  "pre_dpd",
-  # "pre_dpd_1",
-  # "pre_dpd_2",
-  # "pre_dpd_3",
-  # "pre_dpd_4",
-  "pre_bmi",
-  "pre_dm",
-  "pre_sbp",
-  "pre_cpd",
-  # "pre_cpd_1",
-  # "pre_cpd_2",
-  # "pre_cpd_3",
-  # "pre_cpd_4",
-  # "pre_cpd_5",
-  "pre_ldl",
-  "pre_hrx",
-  "pre_liprx"
-  #  "time_f"
+dvs <- c(
+  "event_chd",
+  "event_ascvd",
+  "event_dth",
+  "event_dth_ascvd",
+  "event_cen"
 )
+
+risk_scores <- c(
+  "ascvd_10yr_accaha_risk",
+  "ascvd_10yr_frs_risk",
+  "ascvd_10yr_frs_simple_risk",
+  "ascvd_10yr_accaha_risk_updated",
+  "ascvd_10yr_frs_risk_updated",
+  "ascvd_10yr_frs_simple_risk_updated"
+)
+
+covs_fixed <- c("sex")
 
 covs_tv <- c(
+  "age",
   "smk",
-  "cpd",
-  "drk",
-  "dpd",
-  # "dpd_1",
-  # "dpd_2",
-  # "dpd_3",
-  # "dpd_4",
   "bmi",
   "dm",
-  "sbp",
-  "ldl",
   "hrx",
-  "liprx"
+  "liprx",
+  "tc",
+  "ldl",
+  "hdl",
+  "sbp"
 )
 
-covs_refs <- c(
-  "educ_4",
-  "marital_3",
-  # "pre_dpd_4",
-  # "pre_cpd_5",
-  "dpd_4"
+covs_lag1 <- paste0("lag1_", covs_tv[-1])
+covs_lag2 <- paste0("lag2_", covs_tv[-1])
+
+covs_binary <- c("smk", "dm", "hrx", "liprx")
+vars_binary <- c("smk", "dm", "hrx", "liprx", dvs)
+vars_cont <- c("age", "bmi", "tc", "ldl", "hdl", "sbp")
+
+covs_time <- c(
+  "time"
+ # "time_0",
+ # "time_1",
+ # "time_2",
+ # "time_3",
+ # "time_4",
+ # "time_5"
 )
+
+covs_refs <- c("")
 
 covs_model <- c(covs_fixed, covs_tv)
 covs_dvs <- covs_tv[!covs_tv %in% covs_refs & !grepl("dpd_", covs_tv)]
@@ -187,7 +183,3 @@ covs_ivs <- c(
   "I(age0^2)"
 )
 
-dvs <- c(
-  "event_chd",
-  "event_dth"
-)

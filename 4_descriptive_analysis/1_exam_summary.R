@@ -1,27 +1,31 @@
 exam_mean <- 
-  analytic_long %>%
-  mutate(
-    cpd = replace(cpd, smk == 0, NA),
-    dpd = replace(dpd, drk == 0, NA)
-  ) %>%
+  offspring_long %>%
+  # mutate(
+  #   cpd = replace(cpd, smk == 0, NA),
+  #   dpd = replace(dpd, drk == 0, NA)
+  # ) %>%
   select(all_of(covs_tv), all_of(dvs), time) %>%
   group_by(time) %>%
   summarise(
-    across(covs_tv, mean, na.rm = T), 
-    across(dvs, sum, na.rm = T)
+    across(all_of(covs_tv), mean, na.rm = T), 
+    across(all_of(dvs), sum, na.rm = T),
+    .groups = "drop"
     ) %>%
   pivot_longer(-time) %>%
   rename(mean = value)
 
 exam_sd <- 
-  analytic_long %>%
-  mutate(
-    cpd = replace(cpd, smk == 0, NA),
-    dpd = replace(cpd, drk == 0, NA)
-  ) %>%
+  offspring_long %>%
+  # mutate(
+  #   cpd = replace(cpd, smk == 0, NA),
+  #   dpd = replace(cpd, drk == 0, NA)
+  # ) %>%
   select(all_of(covs_tv), all_of(dvs), time) %>%
   group_by(time) %>%
-  summarise_all(sd, na.rm = T) %>%
+  summarise(
+    across(everything(), sd, na.rm = T),
+    .groups = "drop"
+    ) %>%
   pivot_longer(-time) %>%
   rename(sd = value)
 
@@ -30,29 +34,41 @@ exam_vars <-
   tibble(
     name = unique(exam_mean$name),
     label = c(
+      "Age",
       "Current smoker",
-      "Cigarettes per day among smokers",
-      "Current drinker",
-      "Drinks per day among drinkers",
+      # "Cigarettes per day among smokers",
+      # "Current drinker",
+      # "Drinks per day among drinkers",
       "Body mass index (kg/m$^2$)",
       "Diabetes mellitus",
-      "Systolic blood pressure (mmHg)",
-      "LDL-cholesterol",
       "Blood pressure medication",
       "Lipid lowering medication",
+      "Total cholesterol (mg/dL)",
+      "LDL cholesterol (mg/dL)",
+      "HDL cholesterol (mg/dL)",
+      "Systolic blood pressure (mmHg)",
       "Coronary heart disease events (Y)",
-      "Deaths due to other causes (D)"
+      "Atherosclerotic cardiovascular disease events (Y)",
+      "non-CHD deaths (D)",
+      "non-ASCVD deaths (D)",
+      "Lost to follow up (C)"
     ),
-    type = c("bin",
-             "cont",
+    type = c("cont",
              "bin",
-             "cont",
-             "cont",
-             "bin",
-             "cont",
+             # "cont",
+             # "bin",
+             # "cont",
              "cont",
              "bin",
              "bin",
+             "bin",
+             "cont",
+             "cont",
+             "cont",
+             "cont",
+             "count",
+             "count",
+             "count",
              "count",
              "count")
   )
@@ -86,16 +102,16 @@ kable(
   x = exam_summary,
   format = "latex",
   digits = 1,
-  align = "lccccccc",
+  align = "lcccc",
   col.names = c(
     "Characteristic (Z)",
     "Variable",
-    "\\shortstack{4th exam \\\\ (1987–1991)}",
+    # "\\shortstack{4th exam \\\\ (1987–1991)}",
     "\\shortstack{5th exam \\\\ (1991–1994)}",
     "\\shortstack{6th exam \\\\ (1994–1998)}",
-    "\\shortstack{7th exam \\\\ (1998–2001)}",
-    "\\shortstack{8th exam \\\\ (2001–2004)}",
-    "\\shortstack{9th exam \\\\ (2004–2008)}"
+    "\\shortstack{7th exam \\\\ (1998–2001)}"
+    # "\\shortstack{8th exam \\\\ (2001–2004)}",
+    # "\\shortstack{9th exam \\\\ (2004–2008)}"
   ),
   escape = FALSE,
   booktabs = TRUE,

@@ -299,7 +299,7 @@ fit_X_models <- function(models, data, time = "time", t0 = 0, gam = FALSE) {
           
           'normal' = mgcv::gam(
             formula = model$formula, 
-            family = gaussian(link = model$link),
+            family = gaussian,
             data = subdata
           )
         )
@@ -307,7 +307,12 @@ fit_X_models <- function(models, data, time = "time", t0 = 0, gam = FALSE) {
         fit$stderrs <- add_stderr(fit)
         fit$vcov <- add_vcov(fit)
         fit$outcome <- all.vars(update(model$formula, . ~ 1))
-        
+        if (model$family == 'normal') {
+          fit$type <- 'normal'
+        } else if (model$family == 'binomial') {
+          fit$type <- 'binomial'
+        }
+          
       } else {
         fit <- switch(
           model$family,

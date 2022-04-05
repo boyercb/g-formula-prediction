@@ -17,7 +17,7 @@ csv_list <- c(
 )
 
 csvs <- lapply(csv_list, function (x) {
-  df <- read_csv(get_data(x))
+  df <- read_csv(get_data(x), show_col_types = FALSE)
   names(df) <- tolower(names(df))
   return(df)
 }) 
